@@ -21,15 +21,31 @@
   </div>
   <div id="welcomeMessage" class="welcome" style="display: none;">Welcome, Admin!</div>
   <script>
+    let failedAttempts = 0;
+    let lockUntil = null;
+
     function checkLogin() {
+      const now = Date.now();
+      if (lockUntil && now < lockUntil) {
+        alert("Terlalu banyak percobaan. Coba lagi dalam 5 menit.");
+        return;
+      }
+
       const user = document.getElementById('username').value;
       const pass = document.getElementById('password').value;
+
       if (user === 'admin' && pass === 'admin') {
         document.querySelector('.panel').style.display = 'none';
         const welcome = document.getElementById('welcomeMessage');
         welcome.style.display = 'block';
       } else {
-        alert('Invalid credentials!');
+        failedAttempts++;
+        if (failedAttempts >= 5) {
+          lockUntil = now + 5 * 60 * 1000; // 5 menit
+          alert("Terlalu banyak percobaan gagal. Terkunci selama 5 menit.");
+        } else {
+          alert('Invalid credentials!');
+        }
       }
     }
   </script>
