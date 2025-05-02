@@ -17,12 +17,24 @@
       <label for="password">Password</label>
       <input type="password" id="password" placeholder="••••••••">
     </div>
+    <div class="input-group">
+      <label for="captchaInput">What is <span id="captchaQuestion"></span>?</label>
+      <input type="text" id="captchaInput" placeholder="Your answer">
+    </div>
     <button class="login-btn" onclick="checkLogin()">Enter</button>
   </div>
   <div id="welcomeMessage" class="welcome" style="display: none;">Welcome, Admin!</div>
   <script>
     let failedAttempts = 0;
     let lockUntil = null;
+    let captchaAnswer = 0;
+
+    function generateCaptcha() {
+      const a = Math.floor(Math.random() * 10) + 1;
+      const b = Math.floor(Math.random() * 10) + 1;
+      captchaAnswer = a + b;
+      document.getElementById("captchaQuestion").textContent = `${a} + ${b}`;
+    }
 
     function checkLogin() {
       const now = Date.now();
@@ -33,6 +45,13 @@
 
       const user = document.getElementById('username').value;
       const pass = document.getElementById('password').value;
+      const captchaInput = parseInt(document.getElementById('captchaInput').value);
+
+      if (captchaInput !== captchaAnswer) {
+        alert("Captcha salah!");
+        generateCaptcha();
+        return;
+      }
 
       if (user === 'admin' && pass === 'admin') {
         document.querySelector('.panel').style.display = 'none';
@@ -48,6 +67,8 @@
         }
       }
     }
+
+    generateCaptcha();
   </script>
 </body>
 </html>
